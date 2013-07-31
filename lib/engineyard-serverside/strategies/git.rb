@@ -63,12 +63,12 @@ module EY
           run("#{git} gc")
         end
 
-        def create_revision_file_command(dir)
-          %Q{#{git} show --pretty=format:"%H" | head -1 > "#{dir}/REVISION"}
+        def create_revision_file_command(revision_file_path)
+          %Q{#{git} show --pretty=format:"%H" | head -1 > "#{revision_file_path}"}
         end
 
-        def short_log_message(rev)
-          `#{git} log --pretty=oneline --abbrev-commit -n 1 '#{rev}'`.strip
+        def short_log_message(revision)
+          `#{git} log --pretty=oneline --abbrev-commit -n 1 '#{revision}'`.strip
         end
 
         # git diff --exit-code returns

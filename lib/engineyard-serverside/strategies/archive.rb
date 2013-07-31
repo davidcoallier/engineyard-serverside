@@ -46,8 +46,8 @@ module EY
           # If files are uploaded to the server, we should clean them up here probably.
         end
 
-        def create_revision_file_command(dir)
-          %Q{echo '#{ref.gsub(/'/,"'\\''")}' > "#{dir}/REVISION"}
+        def create_revision_file_command(revision_file_path)
+          Escape.shell_command(['echo', ref, '>', revision_file_path.to_s])
         end
 
         def short_log_message(rev)

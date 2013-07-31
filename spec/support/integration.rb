@@ -67,8 +67,8 @@ class EY::Serverside::Strategies::IntegrationSpec
     copy_fixture_repo_files
   end
 
-  def create_revision_file_command(dir)
-    "echo '#{@ref}' > #{dir}/REVISION"
+  def create_revision_file_command(revision_file_path)
+    Escape.shell_command(['echo', @ref, '>', revision_file_path.to_s])
   end
 
   def short_log_message(revision)

@@ -66,7 +66,7 @@ module EY
       end
 
       def create_revision_file_command
-        strategy.create_revision_file_command(paths.active_release)
+        strategy.create_revision_file_command(paths.active_revision)
       end
 
       def short_log_message(revision)
@@ -195,7 +195,12 @@ chmod 0700 #{path}
         if config.rollback_paths!
           begin
             rolled_back_release = paths.latest_release
-            shell.status "Rolling back to previous release: #{short_log_message(config.active_revision)}"
+            if config.active_revision.exist?
+              revision = config.active_revision.read
+              shell.status "Rolling back to previous release: #{short_log_message(revision)}"
+            else
+              shell.status "Rolling back to previous release."
+            end
             run_with_callbacks(:symlink)
             sudo "rm -rf #{rolled_back_release}"
             bundle
@@ -366,21 +371,11 @@ YML
         end
       end
 
-      # Use [] to access attributes instead of calling methods so
-      # that we get nils instead of NoMethodError.
-      #
       # Rollback doesn't know about the repository location (nor
       # should it need to), but it would like to use #short_log_message.
       def strategy
         ensure_git_ssh_wrapper
-        @strategy ||= config.strategy_class.new(
-          shell,
-          :verbose          => config.verbose,
-          :repository_cache => paths.repository_cache,
-          :app              => config.app,
-          :uri              => config.strategy_uri,
-          :ref              => config[:branch]
-        )
+        config.source_cache_strategy(shell)
       end
 
       protected

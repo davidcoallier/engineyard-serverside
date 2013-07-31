@@ -106,7 +106,8 @@ module EY
         integrate_options[:release_path] = current_app_dir.realpath.to_s
 
         # we have to deploy the same SHA there as here
-        integrate_options[:branch] = current_app_dir.join('REVISION').read.strip
+        revision_path = current_app_dir.join('REVISION')
+        integrate_options[:branch] = revision_path.exist? && revision_path.read.strip
 
         init_and_propagate(integrate_options, 'integrate') do |servers, config, shell|
 
