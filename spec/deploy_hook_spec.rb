@@ -302,6 +302,26 @@ describe "deploy hooks" do
       end
     end
 
+    context "encoding problems" do
+      it "raises an error when encoding is invalid" do
+        str = "# \xB8" # this should be an ascii (c) symbol, which doesn't encode to UTF-8
+        if str.respond_to?(:force_encoding)
+          t = Tempfile.new('invalid_encoding')
+          str.force_encoding('ASCII-8BIT')
+          t.open('r:ASCII-8BIT') do |f|
+            f.write str
+          end
+          code = File.read(t)
+          expect(code).to_not be_valid_encoding
+          expect {
+            deploy_hook.eval_hook(File.read(t))
+          }.to raise_error(RuntimeError, /Invalid encoding in hook/)
+        else
+          pending "Encoding tests don't work in Ruby 1.8"
+        end
+      end
+    end
+
     context "errors in hooks" do
       it "shows the error in a helpful way" do
         lambda {

@@ -21,16 +21,17 @@ module EY
         if hook_path.exist?
           Dir.chdir(config.paths.active_release.to_s) do
             if desc = syntax_error(hook_path)
-              hook_name = hook_path.basename
               abort "*** [Error] Invalid Ruby syntax in hook: #{hook_name} ***\n*** #{desc.chomp} ***"
-            else
-              eval_hook(hook_path.read)
             end
+            eval_hook(hook_path.read)
           end
         end
       end
 
       def eval_hook(code)
+        if code.respond_to?(:valid_encoding?) && !code.valid_encoding?
+          raise "Invalid encoding in hook: #{hook_name}\nExpected encoding: #{code.encoding}"
+        end
         display_deprecation_warnings(code)
         callback_context.instance_eval(code)
       rescue Exception => exception
