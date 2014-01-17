@@ -84,6 +84,7 @@ module EY
       def_path :package_json,             [:active_release, 'package.json']
       def_path :composer_json,            [:active_release, 'composer.json']
       def_path :composer_lock,            [:active_release, 'composer.lock']
+      def_path :requirements_txt          [:active_release, 'requirements.txt']
       def_path :active_release_config,    [:active_release, 'config']
       def_path :active_log,               [:active_release, 'log']
 

@@ -1,6 +1,7 @@
 require 'engineyard-serverside/dependency_manager/bundler'
 require 'engineyard-serverside/dependency_manager/npm'
 require 'engineyard-serverside/dependency_manager/composer'
+require 'engineyard-serverside/dependency_manager/pip'
 
 module EY
   module Serverside
@@ -23,7 +24,8 @@ module EY
       AVAILABLE_MANAGERS = {
         'bundler'  => Bundler,
         'composer' => Composer,
-        'npm'      => Npm
+        'npm'      => Npm,
+        'pip'      => Pip
       }
 
       include Enumerable

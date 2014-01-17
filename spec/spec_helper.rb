@@ -54,6 +54,16 @@ module SpecDependencyHelpers
     context("mocked") { yield true }
     context("unmocked") { yield false } if $COMPOSER_INSTALLED
   end
+
+  $PIP_INSTALLED = system('which pip 2>&1 /dev/null')
+  unless $PIP_INSTALLED 
+    $stderr.puts "pip not found; skipping Python specs."
+  end
+
+  def with_pip_mocked(&block)
+    context("mocked") { yield true }
+    context("unmocked") { yield false} if $PIP_INSTALLED
+  end
 end
 
 RSpec.configure do |config|
@@ -168,6 +178,13 @@ echo "Running npm with $@"
     mock_command('composer', <<-SCRIPT, &block)
 #!/bin/bash
 echo "Running composer with $@"
+    SCRIPT
+  end
+
+  def mock_pip(&block)
+    mock_command('pip', <<-SCRIPT, &block)
+#!/bin/bash
+echo "Running pip with $@"
     SCRIPT
   end
 
